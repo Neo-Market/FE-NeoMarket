@@ -1,0 +1,71 @@
+.header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+}
+
+.header ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.header li a:hover {
+  transform: translateY(-3px);
+}
+
+.header li a.active {
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+}
+
+.logo {
+  font-size: 1.5rem;
+}
+
+.logo a.active {
+  border-bottom: none;
+}
+
+.auth-links {
+  display: flex;
+}
+
+.auth-links a {
+  margin-left: 1rem;
+}
+
+/* 각 탭별 색상 */
+.header li a[href='/'].active {
+  color: #28a745;
+  border-bottom-color: #28a745;
+}
+
+.header li a[href='/auction'].active {
+  color: #dc3545;
+  border-bottom-color: #dc3545;
+}
+
+.header li a[href='/used-items'].active {
+  color: #ffc107;
+  border-bottom-color: #ffc107;
+}
+
+.header li a[href='/login'].active,
+.header li a[href='/admin'].active,
+.header li a[href='/mypage'].active {
+  color: #17a2b8;
+  border-bottom-color: #17a2b8;
+}
