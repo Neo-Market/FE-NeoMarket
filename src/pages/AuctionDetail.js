@@ -1,4 +1,3 @@
-// AuctionDetail.js
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import '../css/AuctionDetail.css';
@@ -26,37 +25,35 @@ const AuctionDetail = () => {
 
   return (
     <div className="auction-detail">
-      <div className="auction-images">
+      <div className="image-gallery">
         {auction.images.map((image, index) => (
           <img key={index} src={image} alt={`${auction.title} ${index + 1}`} />
         ))}
       </div>
       <div className="auction-info">
-        <h1 className="auction-title">{auction.title}</h1>
-        <p className="auction-description">{auction.description}</p>
-        <div className="auction-meta">
-          <div>
-            <span className="meta-label">시작가격:</span> {auction.startPrice}원
-          </div>
-          <div>
-            <span className="meta-label">현재가격:</span> {auction.currentPrice}
-            원
-          </div>
-          <div>
-            <span className="meta-label">마감기한:</span> {auction.endDate}
-          </div>
-          <div>
-            <span className="meta-label">카테고리:</span> {auction.category}
-          </div>
-          <div>
-            <span className="meta-label">조회수:</span> {auction.views}
-          </div>
-          <div>
-            <span className="meta-label">판매자:</span> {auction.seller}
-          </div>
-          <div>
-            <span className="meta-label">상태:</span> {auction.status}
-          </div>
+        <h1>{auction.title}</h1>
+        <p className="price">
+          현재 입찰가: {auction.currentPrice.toLocaleString()}원
+        </p>
+        <p className="status">{auction.status}</p>
+        <div className="meta-info">
+          <span>카테고리: {auction.category}</span>
+          <span>•</span>
+          <span>조회수: {auction.views}</span>
+          <span>•</span>
+          <span>마감기한: {auction.endDate}</span>
+          <span>•</span>
+          <span>판매자: {auction.seller}</span>
+        </div>
+        <div className="content">
+          <h2>상품 설명</h2>
+          <p>{auction.description}</p>
+        </div>
+        <div className="auction-details">
+          <p>
+            <strong>시작가:</strong> {auction.startPrice.toLocaleString()}원
+          </p>
+          <button className="bid-button">입찰하기</button>
         </div>
       </div>
     </div>

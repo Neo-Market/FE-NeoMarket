@@ -1,30 +1,38 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { FaHome, FaGavel, FaExchangeAlt, FaUser } from 'react-icons/fa';
 import '../css/Header.css';
 
 function Header() {
   return (
     <header className="header">
       <nav>
-        <ul>
-          <li className="logo">
-            <Link to="/">Neo Market</Link>
+        <NavLink to="/" className="logo">
+          Neo Market
+        </NavLink>
+        <ul className="nav-links">
+          <li>
+            <NavLink to="/" exact>
+              <FaHome /> 홈
+            </NavLink>
           </li>
           <li>
-            <Link to="/">홈</Link>
+            <NavLink to="/auction">
+              <FaGavel /> 경매
+            </NavLink>
           </li>
           <li>
-            <Link to="/auction">경매</Link>
-          </li>
-          <li>
-            <Link to="/used-items">중고 거래</Link>
-          </li>
-          <li className="auth-links">
-            <Link to="/login">Login</Link>
-            <Link to="/admin">Admin</Link>
-            <Link to="/mypage">MyPage</Link>
+            <NavLink to="/used-items">
+              <FaExchangeAlt /> 중고 거래
+            </NavLink>
           </li>
         </ul>
+        <div className="auth-links">
+          <NavLink to="/login">로그인</NavLink>
+          <NavLink to="/mypage">
+            <FaUser /> 마이페이지
+          </NavLink>
+        </div>
       </nav>
     </header>
   );
