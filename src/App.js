@@ -7,8 +7,10 @@ import Auction from './pages/Auction';
 import AuctionDetail from './pages/AuctionDetail';
 import UsedDetail from './pages/UsedDetail';
 import Used from './pages/Used';
-import './css/App.css';
 import MyPage from './pages/MyPage';
+import GoogleOAuth2Callback from './pages/GoogleOAuth2Callback';
+
+import './css/App.css';
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
             <Route path="/used-items" element={<Used />} />
             <Route path="/used-items/:id" element={<UsedDetail />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/register" element={<GoogleOAuth2Callback />} />
           </Routes>
         </main>
         <Footer />

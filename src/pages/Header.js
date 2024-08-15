@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome, FaGavel, FaExchangeAlt, FaUser } from 'react-icons/fa';
 import '../css/Header.css';
+import LoginComponent from './LoginComponent';
 
 function Header() {
   return (
@@ -28,7 +29,7 @@ function Header() {
           </li>
         </ul>
         <div className="auth-links">
-          <NavLink to="/login">로그인</NavLink>
+          <LoginComponent />
           <NavLink to="/mypage">
             <FaUser /> 마이페이지
           </NavLink>
