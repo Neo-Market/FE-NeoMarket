@@ -8,6 +8,8 @@ import AuctionDetail from './pages/AuctionDetail';
 import UsedDetail from './pages/UsedDetail';
 import Used from './pages/Used';
 import MyPage from './pages/MyPage';
+import Charge from './pages/Charge';
+import Exchange from './pages/Exchange';
 import GoogleOAuth2Callback from './pages/GoogleOAuth2Callback';
 
 import './css/App.css';
@@ -25,6 +27,8 @@ function App() {
             <Route path="/used-items" element={<Used />} />
             <Route path="/used-items/:id" element={<UsedDetail />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/charge" element={<Charge />} />
+            <Route path="/exchange" element={<Exchange />} />
             <Route path="/register" element={<GoogleOAuth2Callback />} />
           </Routes>
         </main>
