@@ -1,0 +1,68 @@
+.exchange-container {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.exchange-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.exchange-balance,
+.exchange-account {
+  margin-bottom: 15px;
+}
+
+.exchange-balance h3,
+.exchange-account h3 {
+  color: #555;
+  font-size: 18px;
+}
+
+.exchange-input {
+  margin-bottom: 20px;
+}
+
+.exchange-input label {
+  display: block;
+  color: #555;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.exchange-input-field {
+  width: calc(100% - 12px);
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.exchange-input-field:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.exchange-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.exchange-button:hover {
+  background-color: #0056b3;
+}
