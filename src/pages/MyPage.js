@@ -7,11 +7,15 @@ const MyPage = () => {
   const [neoPayBalance, setNeoPayBalance] = useState(0);
   const [wishlist, setWishlist] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [accountNumber, setAccountNumber] = useState(null);
+  const [bankName, setBankName] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // API 호출 시뮬레이션
     setUser({ name: '홍길동' });
+    setAccountNumber('122134124');
+    setBankName('신한');
     setNeoPayBalance(50000);
     setWishlist([
       { id: 1, title: '빈티지 시계', price: 50000, type: 'auction' },
@@ -20,10 +24,21 @@ const MyPage = () => {
       { id: 4, title: '다이아몬드 반지', price: 300000, type: 'auction' },
     ]);
     setIsAdmin(true);
-  }, []);
+    console.log('', { neoPayBalance, accountNumber, bankName });
+  }, [neoPayBalance, accountNumber, bankName]);
 
   const handleWishlistItemClick = (itemId, type) => {
     navigate(`/${type === 'auction' ? 'auction' : 'used-items'}/${itemId}`);
+  };
+
+  const exchangeOnClick = () => {
+    navigate('/exchange', {
+      state: {
+        neoPayBalance: neoPayBalance,
+        accountNumber: accountNumber,
+        bankName: bankName,
+      },
+    });
   };
 
   return (
@@ -38,8 +53,15 @@ const MyPage = () => {
         <h3>네오페이 잔액</h3>
         <p className="balance">{neoPayBalance.toLocaleString()}원</p>
         <div className="neopay-actions">
-          <button className="btn btn-charge">충전</button>
-          <button className="btn btn-withdraw">환전</button>
+          <button
+            onClick={() => navigate('/charge')}
+            className="btn btn-charge"
+          >
+            충전
+          </button>
+          <button onClick={exchangeOnClick} className="btn btn-withdraw">
+            환전
+          </button>
         </div>
       </div>
       <div className="wishlist-section">
