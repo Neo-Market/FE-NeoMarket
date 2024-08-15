@@ -9,6 +9,8 @@ import UsedDetail from './pages/UsedDetail';
 import Used from './pages/Used';
 import './css/App.css';
 import MyPage from './pages/MyPage';
+import Charge from './pages/Charge';
+import Exchange from './pages/Exchange';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
             <Route path="/used-items" element={<Used />} />
             <Route path="/used-items/:id" element={<UsedDetail />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/charge" element={<Charge />} />
+            <Route path="/exchange" element={<Exchange />} />
           </Routes>
         </main>
         <Footer />
