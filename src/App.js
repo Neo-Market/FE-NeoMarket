@@ -10,7 +10,7 @@ import Used from './pages/Used';
 import MyPage from './pages/MyPage';
 import Charge from './pages/Charge';
 import Exchange from './pages/Exchange';
-import GoogleOAuth2Callback from './pages/GoogleOAuth2Callback';
+import GoogleCallback from './pages/GoogleCallback';
 
 import './css/App.css';
 
@@ -29,7 +29,7 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/charge" element={<Charge />} />
             <Route path="/exchange" element={<Exchange />} />
-            <Route path="/register" element={<GoogleOAuth2Callback />} />
+            <Route path="/register" element={<GoogleCallback />} />
           </Routes>
         </main>
         <Footer />

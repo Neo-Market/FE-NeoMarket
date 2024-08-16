@@ -1,10 +1,56 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { FaHome, FaGavel, FaExchangeAlt, FaUser } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { FaHome, FaGavel, FaExchangeAlt } from 'react-icons/fa';
+import axios from 'axios';
 import '../css/Header.css';
-import LoginComponent from './LoginComponent';
+import GoogleLoginComponent from './GoogleLoginComponent';
 
 function Header() {
+  const [user, setUser] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get('/api/users/me');
+        setUser(response.data);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          // 사용자가 로그인하지 않은 상태
+          setUser(null);
+        } else {
+          console.error('Error fetching user info:', error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleMyPageClick = () => {
+    navigate('/mypage');
+    setShowDropdown(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/logout');
+      setUser(null);
+      navigate('/');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <header className="header">
       <nav>
@@ -29,10 +75,27 @@ function Header() {
           </li>
         </ul>
         <div className="auth-links">
-          <LoginComponent />
-          <NavLink to="/mypage">
-            <FaUser /> 마이페이지
-          </NavLink>
+          {isLoading ? (
+            <div className="loading">Loading...</div>
+          ) : user ? (
+            <div className="user-profile">
+              <div className="profile-image-container" onClick={toggleDropdown}>
+                <img
+                  src={user.picture}
+                  alt="User Profile"
+                  className="profile-image"
+                />
+              </div>
+              {showDropdown && (
+                <div className="dropdown">
+                  <button onClick={handleMyPageClick}>마이페이지</button>
+                  <button onClick={handleLogout}>로그아웃</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <GoogleLoginComponent />
+          )}
         </div>
       </nav>
     </header>
