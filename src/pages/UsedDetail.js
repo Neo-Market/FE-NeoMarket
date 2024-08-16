@@ -1,61 +1,111 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Trash2, Edit, Eye, Clock, User, Grid } from 'lucide-react';
 import '../css/UsedDetail.css';
 
 const UsedDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
-    // 실제 구현에서는 이 부분에서 서버로부터 데이터를 가져와야 합니다.
-    // 여기서는 예시 데이터를 사용합니다.
     const fetchData = async () => {
-      const dummyData = {
-        id: 1,
-        title: '아이폰 12 Pro 판매합니다',
-        content: '1년 사용한 아이폰 12 Pro 판매합니다. 상태 좋습니다.',
-        status: '진행중',
-        price: 800000,
-        category: '전자기기',
-        views: 150,
-        createdAt: '2023-08-10 14:30',
-        author: '홍길동',
-        images: [
-          '/images/iphone1.jpg',
-          '/images/iphone2.jpg',
-          '/images/iphone3.jpg',
-        ],
-      };
-      setItem(dummyData);
+      try {
+        const response = await axios.get(`/api/used/${id}`);
+        setItem(response.data);
+      } catch (err) {
+        setError('게시글을 불러오는 중 오류가 발생했습니다.');
+        console.error('Error fetching used post details:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, [id]);
 
-  if (!item) return <div className="loading">로딩 중...</div>;
+  const handleEdit = () => {
+    navigate(`/edit/${id}`);
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      try {
+        await axios.delete(`/api/used/${id}`);
+        navigate('/');
+      } catch (err) {
+        setError('게시글 삭제 중 오류가 발생했습니다.');
+        console.error('Error deleting used post:', err);
+      }
+    }
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === item.pictures.length - 1 ? 0 : prevIndex + 1,
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? item.pictures.length - 1 : prevIndex - 1,
+    );
+  };
+
+  if (loading) return <div className="loading">로딩 중...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!item) return <div className="no-data">게시글을 찾을 수 없습니다.</div>;
 
   return (
     <div className="used-detail">
       <div className="image-gallery">
-        {item.images.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`${item.title} - 이미지 ${index + 1}`}
-          />
-        ))}
+        <img
+          src={item.pictures[currentImageIndex]}
+          alt={`${item.title} - 이미지 ${currentImageIndex + 1}`}
+        />
+        <div className="image-navigation">
+          <button onClick={prevImage} className="nav-button">
+            <Grid className="h-4 w-4" />
+          </button>
+          <span>
+            {currentImageIndex + 1} / {item.pictures.length}
+          </span>
+          <button onClick={nextImage} className="nav-button">
+            <Grid className="h-4 w-4" />
+          </button>
+        </div>
       </div>
       <div className="item-info">
         <h1>{item.title}</h1>
         <p className="price">{item.price.toLocaleString()}원</p>
-        <p className="status">{item.status}</p>
+        <div className="status-container">
+          <span className="status">진행중</span>
+          <div className="action-buttons">
+            <button onClick={handleEdit} className="edit-button">
+              <Edit className="mr-2 h-4 w-4" /> 수정
+            </button>
+            <button onClick={handleDelete} className="delete-button">
+              <Trash2 className="mr-2 h-4 w-4" /> 삭제
+            </button>
+          </div>
+        </div>
         <div className="meta-info">
-          <span>카테고리: {item.category}</span>
-          <span>•</span>
-          <span>조회수: {item.views}</span>
-          <span>•</span>
-          <span>작성 시간: {item.createdAt}</span>
-          <span>•</span>
-          <span>작성자: {item.author}</span>
+          <span>
+            <Grid className="inline mr-1" /> {item.category}
+          </span>
+          <span>
+            <Eye className="inline mr-1" /> 조회수 {item.views}
+          </span>
+          <span>
+            <Clock className="inline mr-1" />{' '}
+            {new Date(item.createTime).toLocaleString()}
+          </span>
+          <span>
+            <User className="inline mr-1" /> {item.nickname}
+          </span>
         </div>
         <div className="content">{item.content}</div>
       </div>

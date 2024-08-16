@@ -1,60 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/Auction.css';
+import axios from 'axios';
+import '../css/Post.css';
+import { FadeLoader } from 'react-spinners';
+import { ShoppingBag } from 'lucide-react';
 
 const Auction = () => {
-  const [auctions, setAuctions] = useState([
-    {
-      id: 1,
-      title: '빈티지 시계',
-      currentBid: 50000,
-      endTime: '2024-08-15',
-      type: 'auction',
-    },
-    {
-      id: 2,
-      title: 'MacBook Pro',
-      currentBid: 1200000,
-      endTime: '2024-08-20',
-      type: 'used',
-    },
-    {
-      id: 3,
-      title: '가죽 소파',
-      currentBid: 300000,
-      endTime: '2024-08-18',
-      type: 'auction',
-    },
-    {
-      id: 4,
-      title: '다이슨 청소기',
-      currentBid: 250000,
-      endTime: '2024-08-22',
-      type: 'used',
-    },
-  ]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleCardClick = (auctionId) => {
-    navigate(`/auction/${auctionId}`);
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('/api/auction/list');
+        setItems(response.data);
+      } catch (err) {
+        setError('경매 물품을 불러오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
+  const handleCardClick = (usedId) => {
+    navigate(`/used-items/${usedId}`);
   };
 
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <FadeLoader color={'#4D607B'} loading={loading} size={50} />
+      </div>
+    );
+  }
+
+  if (error) return <div className="error-message">{error}</div>;
+
   return (
-    <div className="auction">
-      <h1 className="auction-title">최근 등록된 상품</h1>
-      <div className="auction-list">
-        {auctions.map((auction) => (
+    <div className="used">
+      <h1 className="used-title">경매 물품 목록</h1>
+      <div className="used-list">
+        {items.map((item) => (
           <div
-            key={auction.id}
-            className={`auction-item ${auction.type}`}
-            onClick={() => handleCardClick(auction.id)}
+            key={item.id}
+            className="used-item"
+            onClick={() => handleCardClick(item.id)}
           >
-            <h2>{auction.title}</h2>
-            <p className="price">{auction.currentBid.toLocaleString()}원</p>
-            <span className="item-type">
-              {auction.type === 'auction' ? '경매' : '중고'}
-            </span>
+            <div className="used-item-image">
+              <img
+                src={item.picture || '/placeholder-image.jpg'}
+                alt={item.title}
+              />
+            </div>
+            <div className="used-item-content">
+              <h2>{item.title}</h2>
+              <p className="price">{item.price}원</p>
+              <p className="seller">판매자: {item.nickname}</p>
+              <span className="item-type">
+                <ShoppingBag size={14} /> 경매
+              </span>
+            </div>
           </div>
         ))}
       </div>

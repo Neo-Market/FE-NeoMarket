@@ -1,95 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../css/MyPage.css';
+import {
+  FaMapMarkerAlt,
+  FaUniversity,
+  FaCreditCard,
+  FaWallet,
+  FaExchangeAlt,
+  FaHeart,
+  FaCog,
+} from 'react-icons/fa';
 
 const MyPage = () => {
   const [user, setUser] = useState(null);
   const [neoPayBalance, setNeoPayBalance] = useState(0);
-  const [wishlist, setWishlist] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [accountNumber, setAccountNumber] = useState(null);
-  const [bankName, setBankName] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // API 호출 시뮬레이션
-    setUser({ name: '홍길동' });
-    setAccountNumber('122134124');
-    setBankName('신한');
-    setNeoPayBalance(50000);
-    setWishlist([
-      { id: 1, title: '빈티지 시계', price: 50000, type: 'auction' },
-      { id: 2, title: '가죽 소파', price: 200000, type: 'used' },
-      { id: 3, title: 'MacBook Pro', price: 1500000, type: 'used' },
-      { id: 4, title: '다이아몬드 반지', price: 300000, type: 'auction' },
-    ]);
-    setIsAdmin(true);
-    console.log('', { neoPayBalance, accountNumber, bankName });
-  }, [neoPayBalance, accountNumber, bankName]);
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('/api/users/me');
+        setUser(response.data);
+        setNeoPayBalance(response.data.point || 0);
+        setIsAdmin(response.data.isAdmin || false);
+      } catch (err) {
+        console.error('Error fetching user info:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleWishlistItemClick = (itemId, type) => {
-    navigate(`/${type === 'auction' ? 'auction' : 'used-items'}/${itemId}`);
-  };
+    fetchUserInfo();
+  }, []);
 
-  const exchangeOnClick = () => {
-    navigate('/exchange', {
-      state: {
-        neoPayBalance: neoPayBalance,
-        accountNumber: accountNumber,
-        bankName: bankName,
-      },
-    });
-  };
+  if (loading) return <div className="loading">Loading...</div>;
+  if (!user) return <div className="error">User information not available</div>;
 
   return (
     <div className="mypage">
-      <h1>마이페이지</h1>
-      {user && (
-        <div className="user-info">
-          <h2>환영합니다, {user.name}님!</h2>
+      <div className="profile-card">
+        <div className="profile-header">
+          <div className="profile-avatar">
+            {user.picture ? (
+              <img src={user.picture} alt={user.name} />
+            ) : (
+              <span>{user.name.charAt(0).toUpperCase()}</span>
+            )}
+          </div>
+          <div className="profile-info">
+            <h2>{user.nickname}님, 안녕하세요!</h2>
+            <p>{user.email}</p>
+          </div>
         </div>
-      )}
-      <div className="neopay-section">
-        <h3>네오페이 잔액</h3>
-        <p className="balance">{neoPayBalance.toLocaleString()}원</p>
-        <div className="neopay-actions">
-          <button
-            onClick={() => navigate('/charge')}
-            className="btn btn-charge"
-          >
-            충전
-          </button>
-          <button onClick={exchangeOnClick} className="btn btn-withdraw">
-            환전
-          </button>
-        </div>
-      </div>
-      <div className="wishlist-section">
-        <h3>위시리스트</h3>
-        <div className="wishlist-grid">
-          {wishlist.map((item) => (
-            <div
-              key={item.id}
-              className="wishlist-item"
-              onClick={() => handleWishlistItemClick(item.id, item.type)}
-            >
-              <h4>{item.title}</h4>
-              <p className="price">{item.price.toLocaleString()}원</p>
-              <span className={`item-type ${item.type}`}>
-                {item.type === 'auction' ? '경매' : '중고'}
-              </span>
-            </div>
-          ))}
+        <div className="profile-details">
+          <div className="detail-item">
+            <FaMapMarkerAlt className="icon" />
+            <span>{user.address}</span>
+          </div>
+          <div className="detail-item">
+            <FaUniversity className="icon" />
+            <span>{user.bankName}</span>
+          </div>
+          <div className="detail-item">
+            <FaCreditCard className="icon" />
+            <span>{user.accountNumber}</span>
+          </div>
         </div>
       </div>
-      {isAdmin && (
-        <div className="admin-section">
-          <h3>관리자 기능</h3>
-          <Link to="/admin/auction-dashboard" className="btn btn-admin">
-            경매 대시보드
+
+      <div className="balance-card">
+        <FaWallet className="balance-icon" />
+        <div className="balance-info">
+          <h3>네오페이 잔액</h3>
+          <p className="balance">{neoPayBalance.toLocaleString()}원</p>
+        </div>
+      </div>
+
+      <div className="action-grid">
+        <button onClick={() => navigate('/charge')} className="action-button">
+          <FaExchangeAlt className="icon" />
+          <span>충전하기</span>
+        </button>
+        <button onClick={() => navigate('/exchange')} className="action-button">
+          <FaExchangeAlt className="icon" />
+          <span>환전하기</span>
+        </button>
+        <Link to={`/wishlist/${user.id}`} className="action-button">
+          <FaHeart className="icon" />
+          <span>위시리스트</span>
+        </Link>
+        {isAdmin && (
+          <Link to="/admin/auction-dashboard" className="action-button admin">
+            <FaCog className="icon" />
+            <span>관리자 대시보드</span>
           </Link>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

@@ -1,22 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGavel, FaExchangeAlt, FaWallet } from 'react-icons/fa';
+import axios from 'axios';
 import '../css/Home.css';
+import { useSpring, animated } from 'react-spring';
 
 const Home = () => {
-  // 임시 데이터, 실제로는 API에서 가져와야 합니다
-  const recentItems = [
-    { id: 1, title: '빈티지 시계', price: 50000, type: 'auction' },
-    { id: 2, title: 'MacBook Pro', price: 1200000, type: 'used' },
-    { id: 3, title: '가죽 소파', price: 300000, type: 'auction' },
-    { id: 4, title: '다이슨 청소기', price: 250000, type: 'used' },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    const fetchRecentPosts = async () => {
+      try {
+        axios
+          .get('/api/home')
+          .then((response) => setPosts(response.data))
+          .catch((error) => console.error('Error fetching data:', error));
+      } catch (err) {
+        console.error('Error fetching home info:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentPosts();
+  }, []);
+
+  const fadeIn = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+    config: { duration: 1000 },
+  });
+
+  const popIn = useSpring({
+    from: { transform: 'scale(0.8)', opacity: 0 },
+    to: { transform: 'scale(1)', opacity: 1 },
+    config: { tension: 300, friction: 10 },
+    delay: 600,
+  });
 
   return (
     <div className="home">
       <div className="hero-section">
-        <h1>🛒 Neo Market에 오신 것을 환영합니다!</h1>
-        <p>경매와 중고 거래를 한 곳에서 편리하게</p>
+        <animated.div style={fadeIn} className="hero-content">
+          <h1>🛒 Neo Market에 오신 것을 환영합니다!</h1>
+          <animated.p style={popIn}>
+            경매와 중고 거래를 한 곳에서 편리하게
+          </animated.p>
+        </animated.div>
+        <div className="drip-container">
+          {[...Array(15)].map((_, index) => (
+            <div
+              key={index}
+              className="drip"
+              style={{
+                left: `${index * 7}%`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
 
       <div className="features-section">
@@ -40,13 +82,12 @@ const Home = () => {
       <div className="recent-items">
         <h2>최근 등록된 상품</h2>
         <div className="item-grid">
-          {recentItems.map((item) => (
-            <div key={item.id} className={`item-card ${item.type}`}>
-              <h3>{item.title}</h3>
-              <p>{item.price.toLocaleString()}원</p>
-              <span className="item-type">
-                {item.type === 'auction' ? '경매' : '중고'}
-              </span>
+          {posts.map((post) => (
+            <div key={post.postId} className={`item-card ${post.postType}`}>
+              <h3>{post.postTitle}</h3>
+              <p>{post.price}원</p>
+              <span className="item-type">{post.postType}</span>
+              <img src={post.imgUrl} className="item-image" />
             </div>
           ))}
         </div>

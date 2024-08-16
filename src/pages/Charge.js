@@ -1,29 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/Charge.css';
+import { FaCoins, FaArrowRight } from 'react-icons/fa';
+import axios from 'axios';
 
 function Charge() {
-  const requestPay = (points, price) => {
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [animatedBalance, setAnimatedBalance] = useState(0);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('/api/users/me');
+        setUser(response.data);
+        setAnimatedBalance(response.data.point || 0);
+      } catch (err) {
+        console.error('Error fetching user info:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const requestPay = () => {
+    if (!selectedPackage) return;
+
     const { IMP } = window;
     const tIMP = process.env.REACT_APP_IMP;
-    IMP.init(tIMP); // 자신의 가맹점 식별코드로 변경
+    IMP.init(tIMP);
+
+    // 결제 요청
     IMP.request_pay(
       {
-        pg: 'html5_inicis', // KG이니시스 PG 파라미터 값
-        pay_method: 'card', // 결제 방법
-        merchant_uid: `merchant_${new Date().getTime()}`, // 주문번호
-        name: points + ' 포인트', // 상품 명
-        amount: price, // 금액
-        buyer_email: 'gildong@gmail.com',
-        buyer_name: '홍길동',
-        buyer_tel: '010-4242-4242',
-        buyer_addr: '서울특별시 강남구 신사동',
-        buyer_postcode: '01181', // 쉼표 제거
+        pg: 'html5_inicis',
+        pay_method: 'card',
+        merchant_uid: `merchant_${new Date().getTime()}`,
+        name: selectedPackage.points + ' 포인트',
+        amount: selectedPackage.price,
+        buyer_email: user.email,
+        buyer_name: user.name,
+        buyer_tel: user.phone,
+        buyer_addr: user.address,
+        buyer_postcode: user.postcode,
       },
-      function (rsp) {
-        // 결제 결과에 따라 로직 수행
+      async function (rsp) {
         if (rsp.success) {
-          // 서버 검증 요청 부분
           console.log('결제 성공', rsp);
+          try {
+            // 결제 성공 시 서버로 충전 요청
+            await axios.post('/api/users/charge', {
+              userId: user.id, // 실제 유저 ID를 사용
+              point: selectedPackage.points, // 충전할 포인트
+              imp_uid: rsp.imp_uid, // 결제 고유 번호
+              merchant_uid: rsp.merchant_uid, // 상점 거래 고유 번호
+            });
+            alert('충전이 완료되었습니다!');
+          } catch (error) {
+            console.error('충전 요청 중 오류 발생:', error);
+            alert('충전 중 오류가 발생했습니다. 다시 시도해 주세요.');
+          }
         } else {
           alert('결제에 실패하였습니다. 에러 내용: ' + rsp.error_msg);
         }
@@ -32,7 +70,7 @@ function Charge() {
   };
 
   const packages = [
-    { points: 100, price: 1000 },
+    { points: 100, price: 100 },
     { points: 300, price: 3000 },
     { points: 500, price: 5000 },
     { points: 1000, price: 10000 },
@@ -42,21 +80,36 @@ function Charge() {
     { points: 10000, price: 100000 },
   ];
 
+  if (loading) return <div className="loading">Loading...</div>;
+  if (!user) return <div className="error">User information not available</div>;
+
   return (
-    <div className="Charge">
-      <h1>포인트 충전</h1>
+    <div className="charge">
+      <h1>
+        <FaCoins /> 포인트 충전
+      </h1>
       <div className="package-container">
         {packages.map((pkg) => (
           <div
             key={pkg.points}
-            className="package"
-            onClick={() => requestPay(pkg.points, pkg.price)}
+            className={`package ${selectedPackage === pkg ? 'selected' : ''}`}
+            onClick={() => setSelectedPackage(pkg)}
           >
             <span className="points">{pkg.points} 포인트</span>
-            <span className="price">{pkg.price}원</span>
+            <span className="price">{pkg.price.toLocaleString()}원</span>
           </div>
         ))}
       </div>
+      <button
+        className={`charge-button ${!selectedPackage ? 'disabled' : ''}`}
+        onClick={requestPay}
+        disabled={!selectedPackage}
+      >
+        {selectedPackage
+          ? `${selectedPackage.points} 포인트 충전하기`
+          : '충전할 포인트를 선택하세요'}
+        <FaArrowRight />
+      </button>
     </div>
   );
 }

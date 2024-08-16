@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/Used.css';
+import axios from 'axios';
+import '../css/Post.css';
+import { FadeLoader } from 'react-spinners';
+import { ShoppingBag } from 'lucide-react';
 
 const Used = () => {
-  const [items, setItems] = useState([
-    { id: 1, title: '중고 노트북', price: 300000, seller: 'user1' },
-    { id: 2, title: '소파', price: 150000, seller: 'user2' },
-    { id: 3, title: '자전거', price: 80000, seller: 'user3' },
-    { id: 4, title: '스마트폰', price: 200000, seller: 'user4' },
-  ]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('/api/used/list');
+        setItems(response.data);
+      } catch (err) {
+        setError('중고 물품을 불러오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const handleCardClick = (usedId) => {
     navigate(`/used-items/${usedId}`);
   };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <FadeLoader color={'#4D607B'} loading={loading} size={50} />
+      </div>
+    );
+  }
+
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="used">
@@ -26,10 +51,20 @@ const Used = () => {
             className="used-item"
             onClick={() => handleCardClick(item.id)}
           >
-            <h2>{item.title}</h2>
-            <p className="price">{item.price.toLocaleString()}원</p>
-            <p className="seller">판매자: {item.seller}</p>
-            <span className="item-type">중고</span>
+            <div className="used-item-image">
+              <img
+                src={item.picture || '/placeholder-image.jpg'}
+                alt={item.title}
+              />
+            </div>
+            <div className="used-item-content">
+              <h2>{item.title}</h2>
+              <p className="price">{item.price}원</p>
+              <p className="seller">판매자: {item.nickname}</p>
+              <span className="item-type">
+                <ShoppingBag size={14} /> 중고
+              </span>
+            </div>
           </div>
         ))}
       </div>
