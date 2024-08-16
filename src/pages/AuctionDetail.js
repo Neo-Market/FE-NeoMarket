@@ -1,60 +1,88 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Trash2, Edit, Eye, Clock, User, Grid, DollarSign } from 'lucide-react';
 import '../css/AuctionDetail.css';
 
 const AuctionDetail = () => {
   const { id } = useParams();
-  // 서버에서 경매 상세 정보를 가져오는 로직이 필요합니다.
-  const auction = {
-    id: 1,
-    title: '빈티지 가죽 자켓',
-    description: '아주 멋진 빈티지 가죽 자켓입니다. 상태가 좋습니다.',
-    startPrice: 50000,
-    currentPrice: 65000,
-    endDate: '2024-08-15',
-    category: '패션',
-    views: 120,
-    seller: 'John Doe',
-    status: '진행 중',
-    images: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-      'https://example.com/image3.jpg',
-    ],
+  const navigate = useNavigate();
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/auction/${id}`);
+        setItem(response.data);
+      } catch (err) {
+        setError('경매 게시글을 불러오는 중 오류가 발생했습니다.');
+        console.error('Error fetching auction post details:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  const handleDelete = async () => {
+    if (window.confirm('정말로 이 경매 게시글을 삭제하시겠습니까?')) {
+      try {
+        await axios.delete(`/api/auction/${id}`);
+        navigate(`/auction`);
+      } catch (err) {
+        setError('경매 게시글 삭제 중 오류가 발생했습니다.');
+        console.error('Error deleting auction post:', err);
+      }
+    }
   };
 
+  if (loading) return <div className="loading">로딩 중...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!item)
+    return <div className="no-data">경매 게시글을 찾을 수 없습니다.</div>;
+
   return (
-    <div className="auction-detail">
+    <div className="detail">
       <div className="image-gallery">
-        {auction.images.map((image, index) => (
-          <img key={index} src={image} alt={`${auction.title} ${index + 1}`} />
+        {item.pictureUrls.map((pic, index) => (
+          <div key={index} className="image-container">
+            <img src={pic} alt={`${item.title} - 이미지 ${index + 1}`} />
+          </div>
         ))}
       </div>
-      <div className="auction-info">
-        <h1>{auction.title}</h1>
-        <p className="price">
-          현재 입찰가: {auction.currentPrice.toLocaleString()}원
-        </p>
-        <p className="status">{auction.status}</p>
-        <div className="meta-info">
-          <span>카테고리: {auction.category}</span>
-          <span>•</span>
-          <span>조회수: {auction.views}</span>
-          <span>•</span>
-          <span>마감기한: {auction.endDate}</span>
-          <span>•</span>
-          <span>판매자: {auction.seller}</span>
-        </div>
-        <div className="content">
-          <h2>상품 설명</h2>
-          <p>{auction.description}</p>
-        </div>
-        <div className="auction-details">
-          <p>
-            <strong>시작가:</strong> {auction.startPrice.toLocaleString()}원
+      <div className="item-info">
+        <h1>{item.title}</h1>
+        <div className="price-info">
+          <p className="price">시작가: {item.startPrice.toLocaleString()}원</p>
+          <p className="current-price">
+            현재가: {item.currentPrice.toLocaleString()}원
           </p>
-          <button className="bid-button">입찰하기</button>
         </div>
+        <div className="status-container">
+          <span className={`status status-${item.status}`}>
+            {item.status === 0 ? '진행중' : '종료'}
+          </span>
+          <div className="action-buttons">
+            <button onClick={handleDelete} className="delete-button">
+              <Trash2 className="mr-2 h-4 w-4" /> 삭제
+            </button>
+          </div>
+        </div>
+        <div className="meta-info">
+          <span>
+            <Grid className="inline mr-1" /> {item.category}
+          </span>
+          <span className="deadline">
+            <Clock className="inline mr-1" /> 마감:{' '}
+            {new Date(item.deadline).toLocaleString()}
+          </span>
+          <span>
+            <User className="inline mr-1" /> 판매자 ID: {item.userId}
+          </span>
+        </div>
+        <div className="content">{item.content}</div>
       </div>
     </div>
   );

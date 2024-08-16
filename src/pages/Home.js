@@ -8,6 +8,7 @@ import { useSpring, animated } from 'react-spring';
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
     const fetchRecentPosts = async () => {
       try {

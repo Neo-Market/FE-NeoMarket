@@ -10,7 +10,6 @@ const UsedDetail = () => {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,31 +27,19 @@ const UsedDetail = () => {
   }, [id]);
 
   const handleEdit = () => {
-    navigate(`/edit/${id}`);
+    navigate(`/used/edit/${id}`);
   };
 
   const handleDelete = async () => {
     if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
       try {
         await axios.delete(`/api/used/${id}`);
-        navigate('/');
+        navigate(`/used`);
       } catch (err) {
         setError('게시글 삭제 중 오류가 발생했습니다.');
         console.error('Error deleting used post:', err);
       }
     }
-  };
-
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === item.pictures.length - 1 ? 0 : prevIndex + 1,
-    );
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? item.pictures.length - 1 : prevIndex - 1,
-    );
   };
 
   if (loading) return <div className="loading">로딩 중...</div>;
@@ -62,21 +49,11 @@ const UsedDetail = () => {
   return (
     <div className="used-detail">
       <div className="image-gallery">
-        <img
-          src={item.pictures[currentImageIndex]}
-          alt={`${item.title} - 이미지 ${currentImageIndex + 1}`}
-        />
-        <div className="image-navigation">
-          <button onClick={prevImage} className="nav-button">
-            <Grid className="h-4 w-4" />
-          </button>
-          <span>
-            {currentImageIndex + 1} / {item.pictures.length}
-          </span>
-          <button onClick={nextImage} className="nav-button">
-            <Grid className="h-4 w-4" />
-          </button>
-        </div>
+        {item.pictures.map((pic, index) => (
+          <div key={index} className="image-container">
+            <img src={pic} alt={`${item.title} - 이미지 ${index + 1}`} />
+          </div>
+        ))}
       </div>
       <div className="item-info">
         <h1>{item.title}</h1>
