@@ -28,7 +28,7 @@ const Used = () => {
   }, []);
 
   const handleCardClick = (usedId) => {
-    navigate(`/used-items/${usedId}`);
+    navigate(`/used/${usedId}`);
   };
 
   if (loading) {

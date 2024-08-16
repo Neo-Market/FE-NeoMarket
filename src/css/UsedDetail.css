@@ -1,5 +1,5 @@
 .used-detail {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #ffffff;
@@ -8,40 +8,23 @@
 }
 
 .image-gallery {
-  position: relative;
-  margin-bottom: 2rem;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.image-gallery img {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-}
-
-.image-navigation {
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 0.5rem;
-  border-radius: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 2rem;
 }
 
-.image-navigation span {
-  margin: 0 1rem;
-  font-weight: bold;
+.image-container {
+  width: calc(33.333% - 10px);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-.nav-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .item-info h1 {
@@ -86,6 +69,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition: background-color 0.3s ease;
 }
 
 .edit-button {
@@ -93,9 +77,17 @@
   color: white;
 }
 
+.edit-button:hover {
+  background-color: #27ae60;
+}
+
 .delete-button {
   background-color: #e74c3c;
   color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
 }
 
 .meta-info {
@@ -145,8 +137,8 @@
     padding: 1rem;
   }
 
-  .image-gallery img {
-    height: 300px;
+  .image-container {
+    width: calc(50% - 5px);
   }
 
   .item-info h1 {
@@ -155,5 +147,11 @@
 
   .price {
     font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-container {
+    width: 100%;
   }
 }

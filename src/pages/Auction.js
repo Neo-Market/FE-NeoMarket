@@ -27,8 +27,8 @@ const Auction = () => {
     fetchItems();
   }, []);
 
-  const handleCardClick = (usedId) => {
-    navigate(`/used-items/${usedId}`);
+  const handleCardClick = (auctionId) => {
+    navigate(`/auction/${auctionId}`);
   };
 
   if (loading) {
@@ -42,22 +42,22 @@ const Auction = () => {
   if (error) return <div className="error-message">{error}</div>;
 
   return (
-    <div className="used">
-      <h1 className="used-title">경매 물품 목록</h1>
-      <div className="used-list">
+    <div className="auction">
+      <h1 className="auction-title">경매 물품 목록</h1>
+      <div className="auction-list">
         {items.map((item) => (
           <div
             key={item.id}
-            className="used-item"
+            className="auction-item"
             onClick={() => handleCardClick(item.id)}
           >
-            <div className="used-item-image">
+            <div className="auction-item-image">
               <img
                 src={item.picture || '/placeholder-image.jpg'}
                 alt={item.title}
               />
             </div>
-            <div className="used-item-content">
+            <div className="auction-item-content">
               <h2>{item.title}</h2>
               <p className="price">{item.price}원</p>
               <p className="seller">판매자: {item.nickname}</p>

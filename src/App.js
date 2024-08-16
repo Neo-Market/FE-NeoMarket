@@ -13,6 +13,7 @@ import Exchange from './pages/Exchange';
 import GoogleCallback from './pages/GoogleCallback';
 
 import './css/App.css';
+import UsedEdit from './pages/UsedEdit';
 
 function App() {
   return (
@@ -24,8 +25,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/auction" element={<Auction />} />
             <Route path="/auction/:id" element={<AuctionDetail />} />
-            <Route path="/used-items" element={<Used />} />
-            <Route path="/used-items/:id" element={<UsedDetail />} />
+            <Route path="/used" element={<Used />} />
+            <Route path="/used/:id" element={<UsedDetail />} />
+            <Route path="/used/edit/:id" element={<UsedEdit />} />
+            <Route path="/auction/edit/:id" element={<UsedEdit />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/charge" element={<Charge />} />
             <Route path="/exchange" element={<Exchange />} />

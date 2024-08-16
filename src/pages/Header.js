@@ -70,7 +70,7 @@ function Header() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/used-items">
+              <NavLink to="/used">
                 <FaExchangeAlt /> 중고 거래
               </NavLink>
             </li>
