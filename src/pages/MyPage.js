@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../css/MyPage.css';
 
 const MyPage = () => {
@@ -7,25 +8,46 @@ const MyPage = () => {
   const [neoPayBalance, setNeoPayBalance] = useState(0);
   const [wishlist, setWishlist] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [accountNumber, setAccountNumber] = useState(null);
-  const [bankName, setBankName] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // API 호출 시뮬레이션
-    setUser({ name: '홍길동' });
-    setAccountNumber('122134124');
-    setBankName('신한');
-    setNeoPayBalance(50000);
+    const fetchUserInfo = async () => {
+      try {
+        setLoading(true);
+        // 현재 로그인한 사용자의 ID를 가져오는 API 호출
+        const currentUserResponse = await axios.get('/api/users/me');
+        const userId = currentUserResponse.data.id;
+        console.log(currentUserResponse);
+        console.log(currentUserResponse.data);
+        console.log(currentUserResponse.data.id);
+
+        // 사용자 정보를 가져오는 API 호출
+        const userInfoResponse = await axios.get(`/api/users/${userId}`);
+        const userData = userInfoResponse.data;
+
+        setUser(userData);
+        setNeoPayBalance(userData.point || 0);
+        setIsAdmin(userData.isAdmin || false); // 백엔드에서 isAdmin 필드를 제공한다고 가정
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching user info:', err);
+        setError('Failed to load user information');
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+
+    // 위시리스트 데이터 설정 (실제 API 호출로 대체 가능)
     setWishlist([
       { id: 1, title: '빈티지 시계', price: 50000, type: 'auction' },
       { id: 2, title: '가죽 소파', price: 200000, type: 'used' },
       { id: 3, title: 'MacBook Pro', price: 1500000, type: 'used' },
       { id: 4, title: '다이아몬드 반지', price: 300000, type: 'auction' },
     ]);
-    setIsAdmin(true);
-    console.log('', { neoPayBalance, accountNumber, bankName });
-  }, [neoPayBalance, accountNumber, bankName]);
+  }, []);
 
   const handleWishlistItemClick = (itemId, type) => {
     navigate(`/${type === 'auction' ? 'auction' : 'used-items'}/${itemId}`);
@@ -35,20 +57,27 @@ const MyPage = () => {
     navigate('/exchange', {
       state: {
         neoPayBalance: neoPayBalance,
-        accountNumber: accountNumber,
-        bankName: bankName,
+        accountNumber: user.accountNumber,
+        bankName: user.bankName,
       },
     });
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!user) return <div>No user information available</div>;
+
   return (
     <div className="mypage">
       <h1>마이페이지</h1>
-      {user && (
-        <div className="user-info">
-          <h2>환영합니다, {user.name}님!</h2>
-        </div>
-      )}
+      <div className="user-info">
+        <h2>환영합니다, {user.name}님!</h2>
+        <p>이메일: {user.email}</p>
+        <p>닉네임: {user.nickname}</p>
+        <p>주소: {user.address}</p>
+        <p>은행: {user.bankName}</p>
+        <p>계좌번호: {user.accountNumber}</p>
+      </div>
       <div className="neopay-section">
         <h3>네오페이 잔액</h3>
         <p className="balance">{neoPayBalance.toLocaleString()}원</p>

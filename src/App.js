@@ -7,10 +7,12 @@ import Auction from './pages/Auction';
 import AuctionDetail from './pages/AuctionDetail';
 import UsedDetail from './pages/UsedDetail';
 import Used from './pages/Used';
-import './css/App.css';
 import MyPage from './pages/MyPage';
 import Charge from './pages/Charge';
 import Exchange from './pages/Exchange';
+import GoogleCallback from './pages/GoogleCallback';
+
+import './css/App.css';
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/charge" element={<Charge />} />
             <Route path="/exchange" element={<Exchange />} />
+            <Route path="/register" element={<GoogleCallback />} />
           </Routes>
         </main>
         <Footer />
