@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaGavel, FaExchangeAlt, FaWallet } from 'react-icons/fa';
 import '../css/Home.css';
+import { useSpring, animated } from 'react-spring';
 
 const Home = () => {
-  // 임시 데이터, 실제로는 API에서 가져와야 합니다
   const recentItems = [
     {
       id: 1,
@@ -40,11 +40,40 @@ const Home = () => {
     },
   ];
 
+  const fadeIn = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+    config: { duration: 1000 },
+  });
+
+  const popIn = useSpring({
+    from: { transform: 'scale(0.8)', opacity: 0 },
+    to: { transform: 'scale(1)', opacity: 1 },
+    config: { tension: 300, friction: 10 },
+    delay: 600,
+  });
+
   return (
     <div className="home">
       <div className="hero-section">
-        <h1>🛒 Neo Market에 오신 것을 환영합니다!</h1>
-        <p>경매와 중고 거래를 한 곳에서 편리하게</p>
+        <animated.div style={fadeIn} className="hero-content">
+          <h1>🛒 Neo Market에 오신 것을 환영합니다!</h1>
+          <animated.p style={popIn}>
+            경매와 중고 거래를 한 곳에서 편리하게
+          </animated.p>
+        </animated.div>
+        <div className="drip-container">
+          {[...Array(15)].map((_, index) => (
+            <div
+              key={index}
+              className="drip"
+              style={{
+                left: `${index * 7}%`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
 
       <div className="features-section">

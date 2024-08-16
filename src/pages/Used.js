@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../css/Used.css';
+import '../css/Post.css';
+import { FadeLoader } from 'react-spinners';
+import { ShoppingBag } from 'lucide-react';
 
 const Used = () => {
   const [items, setItems] = useState([]);
@@ -10,15 +12,13 @@ const Used = () => {
 
   const navigate = useNavigate();
 
-  // 페이지 로드 시 중고 물품 목록을 API로부터 가져옴
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const response = await axios.get('/api/used/list');
-        setItems(response.data); // 데이터를 상태에 저장
+        setItems(response.data);
       } catch (err) {
         setError('중고 물품을 불러오는 중 오류가 발생했습니다.');
-        console.error('Error fetching used items:', err);
       } finally {
         setLoading(false);
       }
@@ -31,8 +31,15 @@ const Used = () => {
     navigate(`/used-items/${usedId}`);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <FadeLoader color={'#4D607B'} loading={loading} size={50} />
+      </div>
+    );
+  }
+
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="used">
@@ -44,10 +51,20 @@ const Used = () => {
             className="used-item"
             onClick={() => handleCardClick(item.id)}
           >
-            <h2>{item.title}</h2>
-            <p className="price">{item.price.toLocaleString()}원</p>
-            <p className="seller">판매자: {item.seller}</p>
-            <span className="item-type">중고</span>
+            <div className="used-item-image">
+              <img
+                src={item.picture || '/placeholder-image.jpg'}
+                alt={item.title}
+              />
+            </div>
+            <div className="used-item-content">
+              <h2>{item.title}</h2>
+              <p className="price">{item.price}원</p>
+              <p className="seller">판매자: {item.nickname}</p>
+              <span className="item-type">
+                <ShoppingBag size={14} /> 중고
+              </span>
+            </div>
           </div>
         ))}
       </div>
