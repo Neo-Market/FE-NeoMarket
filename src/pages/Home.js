@@ -85,10 +85,10 @@ const Home = () => {
         <div className="item-grid">
           {posts.map((post) => (
             <div key={post.postId} className={`item-card ${post.postType}`}>
+              <img src={post.imgUrl} className="item-image" />
               <h3>{post.postTitle}</h3>
               <p>{post.price}원</p>
               <span className="item-type">{post.postType}</span>
-              <img src={post.imgUrl} className="item-image" />
             </div>
           ))}
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../css/Post.css';
+import '../css/Used.css';
 import { FadeLoader } from 'react-spinners';
 import { ShoppingBag } from 'lucide-react';
 
@@ -42,24 +42,24 @@ const Auction = () => {
   if (error) return <div className="error-message">{error}</div>;
 
   return (
-    <div className="auction">
-      <h1 className="auction-title">경매 물품 목록</h1>
-      <div className="auction-list">
+    <div className="used">
+      <h1 className="used-title">경매 물품 목록</h1>
+      <div className="used-list">
         {items.map((item) => (
           <div
             key={item.id}
-            className="auction-item"
+            className="used-item"
             onClick={() => handleCardClick(item.id)}
           >
-            <div className="auction-item-image">
+            <div className="used-item-image">
               <img
                 src={item.picture || '/placeholder-image.jpg'}
                 alt={item.title}
               />
             </div>
-            <div className="auction-item-content">
+            <div className="used-item-content">
               <h2>{item.title}</h2>
-              <p className="price">{item.price}원</p>
+              <p className="price">{item.currentPrice}원</p>
               <p className="seller">판매자: {item.nickname}</p>
               <span className="item-type">
                 <ShoppingBag size={14} /> 경매
