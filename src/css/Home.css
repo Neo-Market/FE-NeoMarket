@@ -132,6 +132,12 @@ body {
   background-color: var(--secondary-color);
 }
 
+.item-image {
+  margin-top: 10px;
+  width: 250px;
+  object-fit: cover;
+}
+
 @media (max-width: 768px) {
   .features-section {
     flex-direction: column;

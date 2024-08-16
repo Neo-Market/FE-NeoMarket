@@ -6,10 +6,38 @@ import '../css/Home.css';
 const Home = () => {
   // 임시 데이터, 실제로는 API에서 가져와야 합니다
   const recentItems = [
-    { id: 1, title: '빈티지 시계', price: 50000, type: 'auction' },
-    { id: 2, title: 'MacBook Pro', price: 1200000, type: 'used' },
-    { id: 3, title: '가죽 소파', price: 300000, type: 'auction' },
-    { id: 4, title: '다이슨 청소기', price: 250000, type: 'used' },
+    {
+      id: 1,
+      title: '빈티지 시계',
+      price: 50000,
+      type: 'auction',
+      image:
+        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/92244722452024014036143178.jpg',
+    },
+    {
+      id: 2,
+      title: 'MacBook Pro',
+      price: 1200000,
+      type: 'used',
+      image:
+        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/%E1%84%86%E1%85%A2%E1%86%A8%E1%84%87%E1%85%AE%E1%86%A8%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9.jpg',
+    },
+    {
+      id: 3,
+      title: '가죽 소파',
+      price: 300000,
+      type: 'auction',
+      image:
+        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/%E1%84%80%E1%85%A1%E1%84%8C%E1%85%AE%E1%86%A8%E1%84%89%E1%85%A9%E1%84%91%E1%85%A1.jpg',
+    },
+    {
+      id: 4,
+      title: '다이슨 청소기',
+      price: 250000,
+      type: 'used',
+      image:
+        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%89%E1%85%B3%E1%86%AB+%E1%84%8E%E1%85%A5%E1%86%BC%E1%84%89%E1%85%A9%E1%84%80%E1%85%B5.jpg',
+    },
   ];
 
   return (
@@ -47,6 +75,7 @@ const Home = () => {
               <span className="item-type">
                 {item.type === 'auction' ? '경매' : '중고'}
               </span>
+              <img src={item.image} className="item-image" />
             </div>
           ))}
         </div>
