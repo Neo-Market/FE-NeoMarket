@@ -1,44 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGavel, FaExchangeAlt, FaWallet } from 'react-icons/fa';
+import axios from 'axios';
 import '../css/Home.css';
 
 const Home = () => {
-  // 임시 데이터, 실제로는 API에서 가져와야 합니다
-  const recentItems = [
-    {
-      id: 1,
-      title: '빈티지 시계',
-      price: 50000,
-      type: 'auction',
-      image:
-        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/92244722452024014036143178.jpg',
-    },
-    {
-      id: 2,
-      title: 'MacBook Pro',
-      price: 1200000,
-      type: 'used',
-      image:
-        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/%E1%84%86%E1%85%A2%E1%86%A8%E1%84%87%E1%85%AE%E1%86%A8%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9.jpg',
-    },
-    {
-      id: 3,
-      title: '가죽 소파',
-      price: 300000,
-      type: 'auction',
-      image:
-        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/%E1%84%80%E1%85%A1%E1%84%8C%E1%85%AE%E1%86%A8%E1%84%89%E1%85%A9%E1%84%91%E1%85%A1.jpg',
-    },
-    {
-      id: 4,
-      title: '다이슨 청소기',
-      price: 250000,
-      type: 'used',
-      image:
-        'https://neo-image.s3.ap-northeast-2.amazonaws.com/test/%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%89%E1%85%B3%E1%86%AB+%E1%84%8E%E1%85%A5%E1%86%BC%E1%84%89%E1%85%A9%E1%84%80%E1%85%B5.jpg',
-    },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    const fetchRecentPosts = async () => {
+      try {
+        axios
+          .get('/api/home')
+          .then((response) => setPosts(response.data))
+          .catch((error) => console.error('Error fetching data:', error));
+      } catch (err) {
+        console.error('Error fetching home info:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentPosts();
+  }, []);
 
   return (
     <div className="home">
@@ -68,14 +52,12 @@ const Home = () => {
       <div className="recent-items">
         <h2>최근 등록된 상품</h2>
         <div className="item-grid">
-          {recentItems.map((item) => (
-            <div key={item.id} className={`item-card ${item.type}`}>
-              <img src={item.image} className="item-image" />
-              <h3>{item.title}</h3>
-              <p>{item.price.toLocaleString()}원</p>
-              <span className="item-type">
-                {item.type === 'auction' ? '경매' : '중고'}
-              </span>
+          {posts.map((post) => (
+            <div key={post.postId} className={`item-card ${post.postType}`}>
+              <h3>{post.postTitle}</h3>
+              <p>{post.price}원</p>
+              <span className="item-type">{post.postType}</span>
+              <img src={post.imgUrl} className="item-image" />
             </div>
           ))}
         </div>
