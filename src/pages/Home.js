@@ -70,12 +70,12 @@ const Home = () => {
         <div className="item-grid">
           {recentItems.map((item) => (
             <div key={item.id} className={`item-card ${item.type}`}>
+              <img src={item.image} className="item-image" />
               <h3>{item.title}</h3>
               <p>{item.price.toLocaleString()}원</p>
               <span className="item-type">
                 {item.type === 'auction' ? '경매' : '중고'}
               </span>
-              <img src={item.image} className="item-image" />
             </div>
           ))}
         </div>

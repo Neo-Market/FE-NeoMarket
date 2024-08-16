@@ -1,20 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../css/Used.css';
 
 const Used = () => {
-  const [items, setItems] = useState([
-    { id: 1, title: '중고 노트북', price: 300000, seller: 'user1' },
-    { id: 2, title: '소파', price: 150000, seller: 'user2' },
-    { id: 3, title: '자전거', price: 80000, seller: 'user3' },
-    { id: 4, title: '스마트폰', price: 200000, seller: 'user4' },
-  ]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+
+  // 페이지 로드 시 중고 물품 목록을 API로부터 가져옴
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('/api/used/list');
+        setItems(response.data); // 데이터를 상태에 저장
+      } catch (err) {
+        setError('중고 물품을 불러오는 중 오류가 발생했습니다.');
+        console.error('Error fetching used items:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const handleCardClick = (usedId) => {
     navigate(`/used-items/${usedId}`);
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="used">

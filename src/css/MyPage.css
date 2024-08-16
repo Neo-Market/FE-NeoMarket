@@ -1,145 +1,176 @@
-:root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --accent-color: #f39c12;
-  --text-color: #333;
-  --background-color: #f4f6f9;
-  --card-background: #fff;
-}
-
 .mypage {
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f4f7f9;
 }
 
-.mypage h1 {
-  color: var(--primary-color);
+.profile-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
   margin-bottom: 2rem;
-  text-align: center;
 }
 
-.user-info,
-.neopay-section,
-.wishlist-section,
-.admin-section {
-  background-color: var(--card-background);
-  padding: 1.5rem;
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 1.5rem;
+  background-color: #4a90e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  font-weight: bold;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.profile-info p {
+  margin: 0.5rem 0 0;
+  color: #666;
+}
+
+.profile-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
   border-radius: 8px;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.neopay-section h3,
-.wishlist-section h3,
-.admin-section h3 {
-  color: var(--primary-color);
-  margin-bottom: 1rem;
+.detail-item .icon {
+  margin-right: 0.75rem;
+  color: #4a90e2;
+}
+
+.balance-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.balance-icon {
+  font-size: 2.5rem;
+  color: #4caf50;
+  margin-right: 1.5rem;
+}
+
+.balance-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: normal;
+  color: #666;
 }
 
 .balance {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  color: var(--accent-color);
+  margin: 0.25rem 0 0;
+  color: #4caf50;
 }
 
-.neopay-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: bold;
-}
-
-.btn-charge {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.btn-withdraw {
-  background-color: var(--secondary-color);
-  color: white;
-}
-
-.btn-admin {
-  background-color: var(--accent-color);
-  color: white;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-.wishlist-grid {
+.action-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
 }
 
-.wishlist-item {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: #fff;
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.wishlist-item:hover {
-  transform: translateY(-5px);
+.action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.wishlist-item h4 {
+.action-button .icon {
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: var(--text-color);
+  color: #4a90e2;
 }
 
-.wishlist-item .price {
-  font-weight: bold;
-  color: var(--primary-color);
+.action-button.admin {
+  background-color: #ff6b6b;
+  color: #fff;
 }
 
-.item-type {
-  display: inline-block;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: white;
-  margin-top: 0.5rem;
+.action-button.admin .icon {
+  color: #fff;
 }
 
-.item-type.auction {
-  background-color: var(--primary-color);
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.item-type.used {
-  background-color: var(--secondary-color);
-}
-
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .mypage {
     padding: 1rem;
   }
 
-  .neopay-actions {
+  .profile-header {
     flex-direction: column;
+    text-align: center;
   }
 
-  .btn {
-    width: 100%;
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
   }
 
-  .wishlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  .action-grid {
+    grid-template-columns: 1fr;
   }
 }

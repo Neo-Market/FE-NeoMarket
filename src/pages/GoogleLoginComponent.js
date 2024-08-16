@@ -4,6 +4,7 @@ import styled from 'styled-components';
 const GoogleButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: #ffffff;
   color: #757575;
   border: 1px solid #dadce0;
@@ -11,12 +12,14 @@ const GoogleButton = styled.button`
   padding: 0 16px;
   height: 40px;
   font-family: 'Roboto', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition:
     background-color 0.3s,
     box-shadow 0.3s;
+  white-space: nowrap;
+  min-width: 180px;
 
   &:hover {
     box-shadow:
@@ -41,8 +44,11 @@ const GoogleLogo = styled.img`
 `;
 
 const GoogleLoginComponent = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+  // 로그인 처리 함수
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = `${apiUrl}/oauth2/authorization/google`;
   };
 
   return (

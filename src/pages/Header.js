@@ -57,23 +57,25 @@ function Header() {
         <NavLink to="/" className="logo">
           Neo Market
         </NavLink>
-        <ul className="nav-links">
-          <li>
-            <NavLink to="/" exact>
-              <FaHome /> 홈
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/auction">
-              <FaGavel /> 경매
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/used-items">
-              <FaExchangeAlt /> 중고 거래
-            </NavLink>
-          </li>
-        </ul>
+        <div className="nav-links-container">
+          <ul className="nav-links">
+            <li>
+              <NavLink to="/" exact>
+                <FaHome /> 홈
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/auction">
+                <FaGavel /> 경매
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/used-items">
+                <FaExchangeAlt /> 중고 거래
+              </NavLink>
+            </li>
+          </ul>
+        </div>
         <div className="auth-links">
           {isLoading ? (
             <div className="loading">Loading...</div>
