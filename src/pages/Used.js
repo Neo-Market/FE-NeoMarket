@@ -6,6 +6,8 @@ import { FadeLoader } from 'react-spinners';
 import { ShoppingBag } from 'lucide-react';
 
 const Used = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +17,7 @@ const Used = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get('/api/used/list');
+        const response = await axios.get(`${API_BASE_URL}/api/used/list`);
         setItems(response.data);
       } catch (err) {
         setError('중고 물품을 불러오는 중 오류가 발생했습니다.');
@@ -43,7 +45,7 @@ const Used = () => {
 
   return (
     <div className="used">
-      <h1 className="used-title">중고 물품 목록</h1>
+      <h2 className="used-title">중고 물품 목록</h2>
       <div className="used-list">
         {items.map((item) => (
           <div
@@ -58,11 +60,11 @@ const Used = () => {
               />
             </div>
             <div className="used-item-content">
-              <h2>{item.title}</h2>
-              <p className="price">{item.price}원</p>
-              <p className="seller">판매자: {item.nickname}</p>
-              <span className="item-type">
-                <ShoppingBag size={14} /> 중고
+              <h3>{item.title}</h3>
+              <p className="used-item-price">{item.price.toLocaleString()}원</p>
+              <p className="used-item-seller">{item.nickname}</p>
+              <span className="used-item-type">
+                <ShoppingBag size={12} /> 중고
               </span>
             </div>
           </div>

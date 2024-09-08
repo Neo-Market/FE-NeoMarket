@@ -13,6 +13,8 @@ import {
 } from 'react-icons/fa';
 
 const MyPage = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   const [user, setUser] = useState(null);
   const [neoPayBalance, setNeoPayBalance] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -22,10 +24,17 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get('/api/users/me');
+        const response = await axios.get(`${API_BASE_URL}/api/users/info`, {
+          withCredentials: true,
+        });
         setUser(response.data);
         setNeoPayBalance(response.data.point || 0);
         setIsAdmin(response.data.isAdmin || false);
+
+        // user.id가 있는 경우 로컬 스토리지에 저장
+        if (response.data.id) {
+          localStorage.setItem('userId', response.data.id);
+        }
       } catch (err) {
         console.error('Error fetching user info:', err);
       } finally {
@@ -80,6 +89,10 @@ const MyPage = () => {
       </div>
 
       <div className="action-grid">
+        <Link to={`/wishlist/${user.id}`} className="action-button">
+          <FaHeart className="icon" />
+          <span>위시리스트</span>
+        </Link>
         <button onClick={() => navigate('/charge')} className="action-button">
           <FaExchangeAlt className="icon" />
           <span>충전하기</span>
@@ -88,10 +101,6 @@ const MyPage = () => {
           <FaExchangeAlt className="icon" />
           <span>환전하기</span>
         </button>
-        <Link to={`/wishlist/${user.id}`} className="action-button">
-          <FaHeart className="icon" />
-          <span>위시리스트</span>
-        </Link>
         {isAdmin && (
           <Link to="/admin/auction-dashboard" className="action-button admin">
             <FaCog className="icon" />

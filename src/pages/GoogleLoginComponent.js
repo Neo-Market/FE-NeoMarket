@@ -19,7 +19,7 @@ const GoogleButton = styled.button`
     background-color 0.3s,
     box-shadow 0.3s;
   white-space: nowrap;
-  min-width: 180px;
+  min-width: 160px;
 
   &:hover {
     box-shadow:
@@ -44,11 +44,11 @@ const GoogleLogo = styled.img`
 `;
 
 const GoogleLoginComponent = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-  // 로그인 처리 함수
   const handleGoogleLogin = () => {
-    window.location.href = `${apiUrl}/oauth2/authorization/google`;
+    // OAuth 인증을 백엔드에 맡기고, 프론트엔드는 Google 로그인 페이지로 리다이렉트
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
   };
 
   return (

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './css/App.css';
 import Header from './pages/Header';
 import Footer from './pages/Footer';
 import Home from './pages/Home';
@@ -11,11 +12,12 @@ import MyPage from './pages/MyPage';
 import Charge from './pages/Charge';
 import Exchange from './pages/Exchange';
 import GoogleCallback from './pages/GoogleCallback';
-
-import './css/App.css';
+import WishList from './pages/Wishlist';
 import UsedEdit from './pages/UsedEdit';
+import WishDetail from './pages/WishDetail';
+import CreatePost from './pages/CreatePost';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <div className="App">
@@ -33,12 +35,16 @@ function App() {
             <Route path="/charge" element={<Charge />} />
             <Route path="/exchange" element={<Exchange />} />
             <Route path="/register" element={<GoogleCallback />} />
+            <Route path="/" element={<GoogleCallback />} />
+            <Route path="/wishlist/:id" element={<WishList />} />{' '}
+            <Route path="/wish/:id" element={<WishDetail />} />
+            <Route path="/create-post" element={<CreatePost />} />
           </Routes>
         </main>
         <Footer />
       </div>
     </Router>
   );
-}
+};
 
 export default App;

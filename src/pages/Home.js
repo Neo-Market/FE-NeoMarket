@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaGavel, FaExchangeAlt, FaWallet } from 'react-icons/fa';
 import axios from 'axios';
 import '../css/Home.css';
+import { FadeLoader } from 'react-spinners';
 import { useSpring, animated } from 'react-spring';
 
 const Home = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecentPosts = async () => {
       try {
-        axios
-          .get('/api/home')
-          .then((response) => setPosts(response.data))
-          .catch((error) => console.error('Error fetching data:', error));
+        const response = await axios.get(`${API_BASE_URL}/api/home`);
+        setPosts(response.data);
       } catch (err) {
-        console.error('Error fetching home info:', err);
+        setError('포스트를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setLoading(false);
       }
@@ -39,13 +43,30 @@ const Home = () => {
     delay: 600,
   });
 
+  const handleCardClick = (post) => {
+    if (post.postType === '경매') {
+      navigate(`/auction/${post.postId}`);
+    } else if (post.postType === '중고') {
+      navigate(`/used/${post.postId}`);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <FadeLoader color={'#4D607B'} loading={loading} size={50} />
+      </div>
+    );
+  }
+  if (error) return <div className="error-message">{error}</div>;
+
   return (
     <div className="home">
       <div className="hero-section">
         <animated.div style={fadeIn} className="hero-content">
-          <h1>🛒 Neo Market에 오신 것을 환영합니다!</h1>
+          <h1 className="neo-market-title">🛍️ Neo Market</h1>
           <animated.p style={popIn}>
-            경매와 중고 거래를 한 곳에서 편리하게
+            경매와 중고 거래를 한 곳에서 편리하게!
           </animated.p>
         </animated.div>
         <div className="drip-container">
@@ -80,15 +101,29 @@ const Home = () => {
         </Link>
       </div>
 
-      <div className="recent-items">
-        <h2>최근 등록된 상품</h2>
-        <div className="item-grid">
+      <div className="home-recent-products">
+        <h2 className="home-section-title">최근 등록된 상품</h2>
+        <div className="home-product-list">
           {posts.map((post) => (
-            <div key={post.postId} className={`item-card ${post.postType}`}>
-              <img src={post.imgUrl} className="item-image" />
-              <h3>{post.postTitle}</h3>
-              <p>{post.price}원</p>
-              <span className="item-type">{post.postType}</span>
+            <div
+              key={post.postId}
+              className="home-product-item"
+              onClick={() => handleCardClick(post)}
+            >
+              <div className="home-product-image">
+                <img
+                  src={post.imgUrl || '/placeholder-image.jpg'}
+                  alt={post.postTitle}
+                />
+              </div>
+              <div className="home-product-content">
+                <h3>{post.postTitle}</h3>
+                <p className="home-product-price">
+                  {post.price.toLocaleString()}원
+                </p>
+                <p className="home-product-seller">{post.nickname}</p>
+                <span className="home-product-type">{post.postType}</span>
+              </div>
             </div>
           ))}
         </div>
