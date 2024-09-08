@@ -5,6 +5,8 @@ import { Trash2, Edit, Eye, Clock, User, Grid, Save } from 'lucide-react';
 import '../css/UsedEdit.css';
 
 const UsedEdit = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
@@ -15,7 +17,7 @@ const UsedEdit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/used/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/api/used/${id}`);
         setItem(response.data);
       } catch (err) {
         setError('게시글을 불러오는 중 오류가 발생했습니다.');
@@ -39,7 +41,7 @@ const UsedEdit = () => {
     e.preventDefault();
     try {
       await axios.put(`/api/used/${id}`, item);
-      navigate(`/used-items/${id}`);
+      navigate(`/used/${id}`);
     } catch (err) {
       setError('게시글 수정 중 오류가 발생했습니다.');
       console.error('Error updating used post:', err);

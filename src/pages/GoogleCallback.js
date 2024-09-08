@@ -10,8 +10,9 @@ const GoogleCallback = () => {
   useEffect(() => {
     // 서버로부터 구글 사용자 정보를 가져옴
     axios
-      .get(`${API_BASE_URL}/api/users/session-user`, { withCredentials: true })
+      .get(`${API_BASE_URL}/api/users/session/info`, { withCredentials: true })
       .then((response) => {
+        console.log('User Info:', response.data);
         setUserInfo(response.data); // userInfo에 사용자 정보를 저장
       })
       .catch((error) => {
