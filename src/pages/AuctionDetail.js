@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Trash2, Edit, Eye, Clock, User, Grid, DollarSign } from 'lucide-react';
+import { Trash2, Clock, User, Grid } from 'lucide-react';
 import '../css/AuctionDetail.css';
 
 const AuctionDetail = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
@@ -14,7 +16,7 @@ const AuctionDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/auction/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/api/auction/${id}`);
         setItem(response.data);
       } catch (err) {
         setError('경매 게시글을 불러오는 중 오류가 발생했습니다.');
@@ -29,7 +31,7 @@ const AuctionDetail = () => {
   const handleDelete = async () => {
     if (window.confirm('정말로 이 경매 게시글을 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`/api/auction/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/auction/${id}`);
         navigate(`/auction`);
       } catch (err) {
         setError('경매 게시글 삭제 중 오류가 발생했습니다.');
@@ -46,7 +48,7 @@ const AuctionDetail = () => {
   return (
     <div className="detail">
       <div className="image-gallery">
-        {item.pictureUrls.map((pic, index) => (
+        {item.pictures.map((pic, index) => (
           <div key={index} className="image-container">
             <img src={pic} alt={`${item.title} - 이미지 ${index + 1}`} />
           </div>

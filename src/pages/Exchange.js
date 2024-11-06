@@ -9,7 +9,9 @@ import {
   FaArrowRight,
 } from 'react-icons/fa';
 
-function Exchange() {
+const Exchange = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   const navigate = useNavigate();
   const [exchangeAmount, setExchangeAmount] = useState('');
   const [animatedBalance, setAnimatedBalance] = useState(0);
@@ -19,7 +21,7 @@ function Exchange() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get('/api/users/me');
+        const response = await axios.get(`${API_BASE_URL}/api/users/info`);
         setUser(response.data);
         setAnimatedBalance(response.data.point || 0);
       } catch (err) {
@@ -129,6 +131,6 @@ function Exchange() {
       </div>
     </div>
   );
-}
+};
 
 export default Exchange;
